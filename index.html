@@ -3,504 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Media Pembelajaran Interaktif</title>
-
+<title>Media Pembelajaran Interaktif - Etnomatematika Candi Penataran</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-/* RESET */
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins', sans-serif;
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+/* --- AUDIO PLAYER --- */
+.audio-controls {
+    position: fixed; bottom: 15px; right: 15px; z-index: 100;
+    background: linear-gradient(135deg, rgba(139,90,43,0.95), rgba(193,154,107,0.9));
+    border-radius: 25px; padding: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    backdrop-filter: blur(15px); width: 85px; text-align: center; border: 2px solid rgba(255,255,255,0.2);
+}
+#audioToggle {
+    background: rgba(255,255,255,0.15); border: none; color: white; font-size: 26px;
+    cursor: pointer; padding: 12px; border-radius: 50%; width: 56px; height: 56px;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;
+}
+#audioStatus { color: white; font-size: 11px; font-weight: 600; }
+
+/* --- LAYOUT & THEME --- */
+body {
+    min-height: 100vh; transition: all 1s ease;
+    background: linear-gradient(rgba(60,40,20,0.5), rgba(60,40,20,0.7)), url('candi.jpg');
+    background-size: cover; background-position: center; background-attachment: fixed;
+}
+body.malam { background: linear-gradient(rgba(10,20,70,0.85), rgba(5,10,40,0.95)), url('candi.jpg'); background-size: cover; background-position: center; background-attachment: fixed;}
+
+.logo { position: absolute; top: 20px; left: 20px; z-index: 50; width: 300px; }
+.logo img { width: 100%; object-fit: contain; }
+
+.toggle {
+    position: fixed; top: 20px; right: 20px; z-index: 50;
+    padding: 12px 24px; border: none; border-radius: 30px;
+    background: #8b5a2b; color: white; cursor: pointer; font-weight: 600;
 }
 
-/* ================= MODE SIANG ================= */
-body{
-    min-height:100vh;
-    transition:1s;
-    background:
-        linear-gradient(rgba(60,40,20,0.5), rgba(60,40,20,0.7)),
-        url('candi.jpg') no-repeat center bottom / cover;
+header {
+    position: relative; z-index: 30; background: rgba(255,235,205,0.97);
+    text-align: center; padding: 100px 20px 50px; border-bottom: 5px solid #8b5a2b;
+}
+header h1 { color: #6b3f1d; font-size: 32px; font-weight: 700; }
+
+.container {
+    position: relative; z-index: 30; max-width: 1000px;
+    margin: 50px auto; padding: 25px;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px;
 }
 
-/* ================= MODE MALAM ================= */
-body.malam{
-    background:
-        linear-gradient(rgba(10,20,70,0.85), rgba(5,10,40,0.95)),
-        url('candi.jpg') no-repeat center bottom / cover;
+/* --- CARDS --- */
+.card {
+    background: rgba(255,245,230,0.97); border-radius: 22px;
+    padding: 40px 30px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+    display: flex; flex-direction: column; justify-content: space-between; transition: 0.3s;
+}
+.card a, .card button {
+    display: inline-block; padding: 15px; background: linear-gradient(135deg, #8b5a2b, #c19a6b);
+    color: white; text-decoration: none; border-radius: 35px; border: none;
+    cursor: pointer; font-weight: 600; width: 100%; margin-top: 15px;
 }
 
-/* ================= BINTANG ================= */
-.stars{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    opacity:0;
-    background:
-      radial-gradient(2px 2px at 5% 10%, white, transparent),
-      radial-gradient(1.5px 1.5px at 15% 40%, white, transparent),
-      radial-gradient(2px 2px at 25% 70%, white, transparent),
-      radial-gradient(1.5px 1.5px at 35% 20%, white, transparent),
-      radial-gradient(2px 2px at 45% 50%, white, transparent),
-      radial-gradient(1.5px 1.5px at 55% 80%, white, transparent),
-      radial-gradient(2px 2px at 65% 30%, white, transparent),
-      radial-gradient(1.5px 1.5px at 75% 60%, white, transparent),
-      radial-gradient(2px 2px at 85% 15%, white, transparent),
-      radial-gradient(1.5px 1.5px at 95% 45%, white, transparent);
-    animation:twinkle 4s infinite alternate;
-    z-index:1;
+/* --- RANKING STYLE --- */
+.ranking-card { 
+    grid-column: 1 / -1; background: #fdf5e6; border-radius: 30px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);
 }
-
-body.malam .stars{
-    opacity:1;
+.ranking-title { text-align: center; font-size: 28px; color: #5d4037; font-weight: 700; margin-bottom: 30px; }
+.ranking-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.ranking-item { 
+    display: flex; align-items: center; justify-content: space-between;
+    background: white; padding: 15px 25px; border-radius: 15px;
 }
+.rank-grade-circle { width: 40px; height: 40px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.g-A { background: #4caf50; } .g-B { background: #2196f3; } .g-C { background: #ff9800; } .g-D { background: #f44336; }
 
-@keyframes twinkle{
-    0%{opacity:0.5;}
-    100%{opacity:1;}
-}
+/* --- MODAL SYSTEM --- */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+.modal.active { display: flex; }
+.modal-content { background: white; max-width: 850px; width: 95%; border-radius: 25px; padding: 35px; max-height: 90vh; overflow-y: auto; position: relative; }
+.close-btn { position: absolute; right: 20px; top: 10px; font-size: 35px; cursor: pointer; color: #666; }
 
-/* ================= DAUN JATUH (SIANG) ================= */
-.leaves{
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    z-index:2;
-}
+/* --- CP & TP STYLES --- */
+.cp-box { background: #fff8f0; padding: 20px; border-radius: 15px; border-left: 6px solid #8b5a2b; margin-bottom: 20px; }
+.tp-item { display: flex; align-items: start; gap: 15px; margin-bottom: 15px; background: #f0f7ff; padding: 15px; border-radius: 12px; text-align: left; }
+.tp-num { background: #2196f3; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: bold; }
 
-body.malam .leaves{
-    display:none;
-}
+/* --- QUIZ STYLES --- */
+.hidden { display: none; }
+.quiz-image { max-width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; display: block; margin-left: auto; margin-right: auto; border: 3px solid #8b5a2b; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+.option { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 10px; cursor: pointer; border: 2px solid transparent; }
+.option.selected { background: #e3f2fd; border-color: #2196f3; }
+.option.correct { background: #c8e6c9; border-color: #4caf50; }
+.option.wrong { background: #ffcdd2; border-color: #f44336; }
+.progress-bar { height: 10px; background: #eee; border-radius: 5px; margin: 15px 0; overflow: hidden; }
+.progress { height: 100%; background: #8b5a2b; width: 0%; transition: 0.5s; }
 
-.leaf{
-    position:absolute;
-    width:40px;
-    height:40px;
-    background:url('leaf.png') no-repeat center/contain;
-    animation:fall 12s linear infinite;
-    opacity:0.8;
-}
+footer { text-align: center; padding: 20px; color: white; font-weight: 500; }
 
-@keyframes fall{
-    0%{
-        transform:translateY(-100px) rotate(0deg);
-        opacity:1;
-    }
-    100%{
-        transform:translateY(110vh) rotate(360deg);
-        opacity:0;
-    }
-}
-
-/* ================= TOMBOL MODE ================= */
-.toggle{
-    position:fixed;
-    top:20px;
-    right:20px;
-    z-index:5;
-    padding:10px 20px;
-    border:none;
-    border-radius:30px;
-    background:#8b5a2b;
-    color:white;
-    cursor:pointer;
-}
-
-/* ================= HEADER ================= */
-header{
-    position:relative;
-    z-index:3;
-    background:rgba(255,235,205,0.95);
-    text-align:center;
-    padding:40px 20px;
-    border-bottom:4px solid #8b5a2b;
-}
-
-header h1{color:#6b3f1d;}
-header p{color:#5a3a22;margin-top:8px;}
-
-/* ================= KONTEN ================= */
-.container{
-    position:relative;
-    z-index:3;
-    max-width:1200px;
-    margin:60px auto;
-    padding:20px;
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:30px;
-}
-
-.card{
-    background:rgba(255,245,230,0.95);
-    border-radius:18px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-10px);
-}
-
-.card h2{color:#6b3f1d;}
-.card p{color:#4e3422;margin-bottom:20px;}
-
-.card a{
-    display:inline-block;
-    padding:12px 30px;
-    background:linear-gradient(135deg,#8b5a2b,#c19a6b);
-    color:white;
-    text-decoration:none;
-    border-radius:30px;
-    cursor:pointer;
-}
-
-/* ================= RANKING CARD ================= */
-.ranking-card{
-    grid-column: 1 / -1;
-    background:rgba(255,245,230,0.95);
-    border-radius:18px;
-    padding:30px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.3);
-}
-
-.ranking-card h2{
-    color:#6b3f1d;
-    text-align:center;
-    margin-bottom:25px;
-    font-size:28px;
-}
-
-.ranking-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-    gap:15px;
-}
-
-.ranking-item{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 20px;
-    background:white;
-    border-radius:10px;
-    border-left:4px solid #667eea;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    transition:0.3s;
-}
-
-.ranking-item:hover{
-    transform:translateX(5px);
-    box-shadow:0 4px 12px rgba(0,0,0,0.15);
-}
-
-.ranking-medal{
-    font-size:24px;
-    margin-right:10px;
-}
-
-.ranking-name{
-    font-weight:600;
-    color:#333;
-}
-
-.ranking-score{
-    font-weight:700;
-    color:#667eea;
-}
-
-.ranking-grade{
-    padding:4px 12px;
-    border-radius:20px;
-    font-size:14px;
-    font-weight:600;
-    margin-left:8px;
-}
-
-.grade-A{background:#4caf50; color:white;}
-.grade-B{background:#2196f3; color:white;}
-.grade-C{background:#ff9800; color:white;}
-.grade-D{background:#f44336; color:white;}
-
-.no-ranking{
-    text-align:center;
-    padding:40px;
-    color:#999;
-    font-size:18px;
-}
-
-/* ================= MODAL UJIAN ================= */
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.8);
-    z-index:1000;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
-}
-
-.modal.active{
-    display:flex;
-}
-
-.modal-content{
-    background:white;
-    max-width:700px;
-    width:100%;
-    border-radius:20px;
-    padding:40px;
-    max-height:90vh;
-    overflow-y:auto;
-}
-
-.close-btn{
-    float:right;
-    font-size:28px;
-    font-weight:bold;
-    color:#666;
-    cursor:pointer;
-}
-
-.close-btn:hover{
-    color:#000;
-}
-
-.score-box{
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color:white;
-    padding:15px;
-    border-radius:10px;
-    text-align:center;
-    margin-bottom:25px;
-    font-size:18px;
-    font-weight:600;
-}
-
-.question-box{
-    margin-bottom:30px;
-}
-
-.question{
-    font-size:18px;
-    color:#333;
-    font-weight:600;
-    margin-bottom:20px;
-    line-height:1.6;
-}
-
-.options{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.option{
-    background:#f8f9fa;
-    padding:15px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:0.3s;
-    border:2px solid transparent;
-}
-
-.option:hover{
-    background:#e9ecef;
-    transform:translateX(5px);
-}
-
-.option.selected{
-    background:#e3f2fd;
-    border-color:#2196f3;
-}
-
-.option.correct{
-    background:#c8e6c9;
-    border-color:#4caf50;
-}
-
-.option.wrong{
-    background:#ffcdd2;
-    border-color:#f44336;
-}
-
-.option.disabled{
-    cursor:not-allowed;
-    opacity:0.7;
-}
-
-.btn-quiz{
-    padding:15px;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
-    width:100%;
-    margin-top:10px;
-}
-
-.btn-submit{
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color:white;
-}
-
-.btn-submit:hover{
-    transform:translateY(-2px);
-    box-shadow:0 5px 15px rgba(102,126,234,0.4);
-}
-
-.btn-submit:disabled{
-    background:#ccc;
-    cursor:not-allowed;
-    transform:none;
-}
-
-.btn-next{
-    background:#4caf50;
-    color:white;
-}
-
-.btn-next:hover{
-    background:#45a049;
-}
-
-.result-box{
-    text-align:center;
-    padding:30px;
-}
-
-.result-box h2{
-    font-size:32px;
-    color:#333;
-    margin-bottom:20px;
-}
-
-.result-score{
-    font-size:48px;
-    font-weight:700;
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    margin-bottom:20px;
-}
-
-.result-message{
-    font-size:18px;
-    color:#666;
-    margin-bottom:30px;
-}
-
-.grade-badge{
-    display:inline-block;
-    padding:20px 40px;
-    border-radius:15px;
-    font-size:48px;
-    font-weight:700;
-    margin:20px 0;
-}
-
-.ranking-box{
-    background:#f5f5f5;
-    padding:20px;
-    border-radius:10px;
-    margin:20px 0;
-}
-
-.ranking-box h3{
-    color:#333;
-    margin-bottom:15px;
-}
-
-.btn-restart{
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color:white;
-    padding:15px 40px;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    margin:5px;
-}
-
-.btn-restart:hover{
-    transform:translateY(-2px);
-    box-shadow:0 5px 15px rgba(102,126,234,0.4);
-}
-
-.hidden{
-    display:none;
-}
-
-.progress-bar{
-    height:8px;
-    background:#e0e0e0;
-    border-radius:10px;
-    margin-bottom:20px;
-    overflow:hidden;
-}
-
-.progress{
-    height:100%;
-    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    transition:0.3s;
-}
-
-.name-input-box{
-    text-align:center;
-    padding:30px;
-}
-
-.name-input-box input{
-    width:100%;
-    padding:15px;
-    font-size:16px;
-    border:2px solid #ddd;
-    border-radius:10px;
-    margin:20px 0;
-}
-
-/* ================= FOOTER ================= */
-footer{
-    position:relative;
-    z-index:3;
-    background:rgba(255,235,205,0.95);
-    text-align:center;
-    padding:20px;
-    border-top:3px solid #8b5a2b;
-    color:#5a3a22;
-}
+@media (max-width: 768px) { .container, .ranking-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
-
 <body>
 
-<button class="toggle" onclick="toggleMode()">🌙 / 🌞</button>
-
-<!-- BINTANG -->
-<div class="stars"></div>
-
-<!-- DAUN -->
-<div class="leaves">
-    <div class="leaf" style="left:10%; animation-delay:0s;"></div>
-    <div class="leaf" style="left:30%; animation-delay:3s;"></div>
-    <div class="leaf" style="left:50%; animation-delay:6s;"></div>
-    <div class="leaf" style="left:70%; animation-delay:1s;"></div>
-    <div class="leaf" style="left:90%; animation-delay:4s;"></div>
+<div class="audio-controls">
+    <button id="audioToggle">🎵</button>
+    <div id="audioStatus">Mati</div>
+    <audio id="gamelanAudio" loop preload="auto"><source src="gamelan.mp3" type="audio/mpeg"></audio>
 </div>
 
-<!-- MUSIK GAMELAN -->
-<audio id="gamelan" autoplay loop controls
-       style="position:fixed; bottom:15px; right:15px; z-index:5;">
-    <source src="gamelan.mp3" type="audio/mpeg">
-</audio>
+<div class="logo"><img src="logo.png" alt="Logo"></div>
+<button class="toggle" onclick="toggleMode()">🌙 / 🌞</button>
 
 <header>
     <h1>📚 Media Pembelajaran Interaktif</h1>
@@ -509,380 +121,210 @@ footer{
 
 <section class="container">
     <div class="card">
-        <h2>📖 Materi</h2>
-        <p>E-Book interaktif Heyzine</p>
+        <div><h2>📖 Materi</h2><p>E-Book interaktif etnomematika.</p></div>
         <a href="https://heyzine.com/flip-book/29880c854c.html" target="_blank">Buka Materi</a>
     </div>
 
     <div class="card">
-        <h2>✍️ Latihan Soal</h2>
-        <p>Latihan interaktif Wordwall</p>
-        <a href="https://wordwall.net/id/resource/103407679" target="_blank">
-            Mulai Latihan
-        </a>
+        <div><h2>✍️ Latihan Soal</h2><p>Latihan interaktif Wordwall.</p></div>
+        <a href="https://wordwall.net/id/resource/103407679" target="_blank">Mulai Latihan</a>
     </div>
 
     <div class="card">
-        <h2>📝 Soal Ujian</h2>
-        <p>Kuis pilihan ganda interaktif</p>
-        <a onclick="openQuiz()">Masuk Ujian</a>
+        <div><h2>🎯 CP & TP</h2><p>Capaian & Tujuan Pembelajaran.</p></div>
+        <button onclick="openCPTP()">Lihat Detail</button>
     </div>
 
-    <!-- RANKING SECTION -->
+    <div class="card">
+        <div><h2>📝 Soal Ujian</h2><p>Kuis 10 soal interaktif.</p></div>
+        <button onclick="openQuiz()">Masuk Ujian</button>
+    </div>
+
     <div class="ranking-card">
-        <h2>🏆 Papan Peringkat Teratas</h2>
+        <h2 class="ranking-title">🏆 Papan Peringkat Teratas</h2>
         <div id="home-ranking-list" class="ranking-grid"></div>
     </div>
 </section>
 
-<!-- MODAL UJIAN -->
+<div class="modal" id="cptpModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeCPTP()">&times;</span>
+        <h2 style="color: #6b3f1d; text-align: center; margin-bottom: 25px;">🎯 Capaian & Tujuan Pembelajaran</h2>
+        <div class="cp-box">
+            <h3 style="color: #8b5a2b; margin-bottom: 10px;">Capaian Pembelajaran (CP) - Fase B</h3>
+            <p style="line-height: 1.6;">Peserta didik dapat mendeskripsikan ciri berbagai bentuk bangun datar (segiempat, segitiga, segibanyak), menyusun (komposisi) dan mengurai (dekomposisi) berbagai bangun datar, serta mengukur luas dan volume menggunakan satuan tak baku dan baku.</p>
+        </div>
+        <h3 style="color: #2196f3; margin-bottom: 15px; text-align: left;">Tujuan Pembelajaran (TP):</h3>
+        <div class="tp-item"><div class="tp-num">1</div><p>Mengidentifikasi unsur-unsur bangun datar (sisi, sudut) dan jenis-jenisnya (persegi, segitiga, persegi panjang, jajar genjang, belah ketupat, dll.).</p></div>
+        <div class="tp-item"><div class="tp-num">2</div><p>Mendeskripsikan ciri-ciri khusus dari bangun datar tersebut (misalnya, persegi memiliki 4 sisi sama panjang dan 4 sudut siku-siku).</p></div>
+        <div class="tp-item"><div class="tp-num">3</div><p>Menyusun (menggabungkan) dan mengurai (memecah) bangun datar menjadi bentuk lain.</p></div>
+        <div class="tp-item"><div class="tp-num">4</div><p>Mengukur luas dan volume bangun datar menggunakan satuan tak baku (misalnya, kertas petak) dan baku (cm², m²).</p></div>
+        <div class="tp-item"><div class="tp-num">5</div><p>Menentukan hubungan antar-satuan baku panjang (cm ke m) yang relevan untuk luas.</p></div>
+        <button onclick="closeCPTP()" style="padding: 15px; width: 100%; background: #8b5a2b; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">Saya Mengerti ✅</button>
+    </div>
+</div>
+
 <div class="modal" id="quizModal">
     <div class="modal-content">
         <span class="close-btn" onclick="closeQuiz()">&times;</span>
         
-        <!-- INPUT NAMA -->
-        <div id="name-input-container" class="name-input-box">
+        <div id="name-input-container" style="text-align: center; padding: 20px;">
             <h2>📝 Masukkan Nama Anda</h2>
-            <input type="text" id="student-name" placeholder="Nama lengkap...">
-            <button class="btn-quiz btn-submit" onclick="startQuiz()">Mulai Ujian</button>
+            <input type="text" id="student-name" placeholder="Nama Lengkap..." style="width:100%; padding:15px; margin:20px 0; border-radius:10px; border:2px solid #ddd;">
+            <button onclick="startQuiz()" style="padding:15px 40px; background:#8b5a2b; color:white; border:none; border-radius:30px; cursor:pointer; font-weight:bold;">Mulai Ujian 🚀</button>
         </div>
 
-        <!-- QUIZ CONTAINER -->
         <div id="quiz-container" class="hidden">
-            <h2 style="text-align:center; color:#333; margin-bottom:20px;">📝 Kuis Etnomatematika</h2>
-            
-            <div class="progress-bar">
-                <div class="progress" id="progress"></div>
-            </div>
-
-            <div class="score-box">
-                Soal <span id="current-question">1</span> dari <span id="total-questions">10</span> | Skor: <span id="score">0</span>
-            </div>
-
-            <div class="question-box">
-                <div class="question" id="question"></div>
-                <div class="options" id="options"></div>
-            </div>
-
-            <button class="btn-quiz btn-submit" id="btn-submit" onclick="checkAnswer()" disabled>Periksa Jawaban</button>
-            <button class="btn-quiz btn-next hidden" id="btn-next" onclick="nextQuestion()">Soal Berikutnya</button>
+            <div class="progress-bar"><div class="progress" id="progress"></div></div>
+            <img id="quiz-img" src="" class="quiz-image" style="display: none;">
+            <div id="question" style="font-size:18px; font-weight:bold; margin-bottom:20px; text-align: center; line-height: 1.6;"></div>
+            <div id="options"></div>
+            <button id="btn-submit" onclick="checkAnswer()" disabled style="width:100%; padding:15px; background:#8b5a2b; color:white; border:none; border-radius:10px; margin-top:10px; cursor:pointer; font-weight: 600;">Periksa Jawaban ✅</button>
+            <button id="btn-next" onclick="nextQuestion()" class="hidden" style="width:100%; padding:15px; background:#4caf50; color:white; border:none; border-radius:10px; margin-top:10px; cursor:pointer; font-weight: 600;">Soal Berikutnya ➡️</button>
         </div>
 
-        <!-- RESULT CONTAINER -->
-        <div id="result-container" class="result-box hidden">
-            <h2>🎉 Ujian Selesai!</h2>
-            <div class="result-score" id="final-score">0/10</div>
-            <div class="grade-badge" id="grade-badge">A</div>
-            <div class="result-message" id="result-message"></div>
-            
-            <div class="ranking-box">
-                <h3>🏆 Papan Peringkat</h3>
-                <div id="ranking-list"></div>
+        <div id="result-container" class="hidden" style="text-align: center;">
+            <h2>🎉 Hasil Ujian</h2>
+            <div id="final-score" style="font-size: 50px; font-weight: 900; color: #8b5a2b; margin: 10px 0;">0/10</div>
+            <p id="result-message" style="margin-bottom: 20px; color: #555; font-size: 18px;"></p>
+            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="restartQuiz()" style="padding:15px 30px; border-radius:30px; border:none; background:#8b5a2b; color:white; cursor:pointer; font-weight:bold;">Ulangi Ujian 🔄</button>
+                <button onclick="finishQuiz()" style="padding:15px 30px; border-radius:30px; border:none; background:#4caf50; color:white; cursor:pointer; font-weight:bold;">Selesai & Keluar ✅</button>
             </div>
-
-            <button class="btn-restart" onclick="restartQuiz()">Ulangi Ujian</button>
-            <button class="btn-restart" onclick="closeQuiz()" style="background:#666;">Tutup</button>
         </div>
     </div>
 </div>
 
-<footer>
-© 2025 • Media Pembelajaran • Candi Penataran
-</footer>
+<footer>© 2026 • Etnomatematika Candi Penataran</footer>
 
 <script>
 const quizData = [
-    {
-        question: "Pintu masuk Candi Penataran berbentuk persegi panjang dengan panjang 5 m dan lebar 2 m. Keliling pintu tersebut adalah...",
-        options: ["10 m", "12 m", "14 m", "16 m"],
-        correct: 2
-    },
-    {
-        question: "Dinding kaki Candi Penataran berbentuk persegi panjang dengan panjang 8 m dan lebar 3 m. Luas dinding tersebut adalah...",
-        options: ["22 m²", "24 m²", "26 m²", "28 m²"],
-        correct: 1
-    },
-    {
-        question: "Sebuah relief pada dinding candi berbentuk persegi dengan sisi 4 m. Keliling relief tersebut adalah...",
-        options: ["12 m", "14 m", "16 m", "18 m"],
-        correct: 2
-    },
-    {
-        question: "Ornamen persegi pada relief candi memiliki sisi 6 m. Luas ornamen tersebut adalah...",
-        options: ["24 m²", "30 m²", "36 m²", "42 m²"],
-        correct: 2
-    },
-    {
-        question: "Tampak depan tangga candi berbentuk trapesium dengan panjang sisi sejajar 12 m dan 8 m, serta tinggi 5 m. Luas tampak depan tangga adalah...",
-        options: ["45 m²", "50 m²", "55 m²", "60 m²"],
-        correct: 1
-    },
-    {
-        question: "Sebuah anak tangga candi berbentuk persegi panjang dengan panjang 2,5 m dan lebar 1 m. Luas satu anak tangga adalah...",
-        options: ["2 m²", "2,5 m²", "3 m²", "3,5 m²"],
-        correct: 1
-    },
-    {
-        question: "Atap candi berbentuk segitiga dengan alas 6 m dan tinggi 4 m. Luas atap candi tersebut adalah...",
-        options: ["10 m²", "12 m²", "14 m²", "16 m²"],
-        correct: 1
-    },
-    {
-        question: "Bagian atap candi berbentuk segitiga sama sisi dengan panjang setiap sisi 5 m. Keliling atap candi tersebut adalah...",
-        options: ["10 m", "12 m", "15 m", "20 m"],
-        correct: 2
-    },
-    {
-        question: "Sebuah tangga candi tampak depan berbentuk trapesium dengan sisi sejajar 15 m dan 9 m, serta tinggi 6 m. Luas tampak depan tangga adalah...",
-        options: ["66 m²", "70 m²", "72 m²", "76 m²"],
-        correct: 2
-    },
-    {
-        question: "Pintu candi berbentuk persegi panjang dengan panjang 4,5 m dan lebar 2 m. Jika keliling pintu tersebut akan dipasangi bingkai kayu, maka panjang kayu yang dibutuhkan adalah...",
-        options: ["11 m", "12 m", "13 m", "14 m"],
-        correct: 2
-    }
+    { question: "Pintu masuk Candi Penataran berbentuk persegi panjang (5m × 2m). Berapakah kelilingnya?", options: ["10 m", "12 m", "14 m", "16 m"], correct: 2, image: "soal1.png" },
+    { question: "Dinding kaki candi berbentuk persegi panjang (8m × 3m). Berapakah luaspermukaannya?", options: ["22 m²", "24 m²", "26 m²", "28 m²"], correct: 1, image: "soal2.png" },
+    { question: "Relief indah dipahat di batu persegi dengan sisi 4m. Berapakah kelilingnya?", options: ["12 m", "14 m", "16 m", "18 m"], correct: 2, image: "soal3.png" },
+    { question: "Ornamen bunga berbentuk persegi dengan panjang sisi 6m. Berapakah luasnya?", options: ["24 m²", "30 m²", "36 m²", "42 m²"], correct: 2, image: "soal4.png" },
+    { question: "Bagian samping tangga membentuk trapesium (sisi sejajar 12m & 8m, tinggi 5m). Berapakah luasnya?", options: ["45 m²", "50 m²", "55 m²", "60 m²"], correct: 1, image: "soal5.png" },
+    { question: "Sebuah anak tangga memiliki ukuran 2,5m × 1m. Berapakah luas anak tangga tersebut?", options: ["2 m²", "2,5 m²", "3 m²", "3,5 m²"], correct: 1, image: "soal6.png" },
+    { question: "Atap bangunan kecil berbentuk segitiga (alas 6m, tinggi 4m). Berapakah luasnya?", options: ["10 m²", "12 m²", "14 m²", "16 m²"], correct: 1, image: "soal7.png" },
+    { question: "Hiasan puncak candi berbentuk segitiga siku-siku (sisi 3m, 4m, 5m). Kelilingnya?", options: ["10 m", "12 m", "15 m", "20 m"], correct: 1, image: "soal8.png" },
+    { question: "Pondasi tangga besar berbentuk trapesium (sisi sejajar 15m & 9m, tinggi 6m). Luasnya?", options: ["66 m²", "70 m²", "72 m²", "76 m²"], correct: 2, image: "soal9.png" },
+    { question: "Pintu utama (4,5m × 2m) dipasang bingkai kayu. Berapa meter kayu yang dibutuhkan?", options: ["11 m", "12 m", "13 m", "14 m"], correct: 2, image: "soal10.png" }
 ];
 
-let currentQuestion = 0;
-let score = 0;
-let selectedAnswer = null;
-let studentName = '';
-let rankings = [];
+let currentQ = 0, score = 0, selected = null, studentName = '', rankings = [];
 
-// Load rankings from localStorage
 function loadRankings() {
-    const saved = localStorage.getItem('quizRankings');
+    const saved = localStorage.getItem('candiRankings');
     rankings = saved ? JSON.parse(saved) : [];
+    displayRankings();
 }
 
-// Save rankings to localStorage
-function saveRankings() {
-    localStorage.setItem('quizRankings', JSON.stringify(rankings));
+function displayRankings() {
+    const listHTML = rankings.slice(0, 10).map((r, i) => {
+        let grade = r.score >= 9 ? 'A' : r.score >= 7 ? 'B' : r.score >= 5 ? 'C' : 'D';
+        return `<div class="ranking-item">
+            <div style="display:flex; gap:15px;"><span>${i<3?['🥇','🥈','🥉'][i]:'🏅'}</span><span>${r.name}</span></div>
+            <div style="display:flex; gap:15px; align-items:center;"><span>${r.score}/10</span><div class="rank-grade-circle g-${grade}">${grade}</div></div>
+        </div>`;
+    }).join('');
+    document.getElementById('home-ranking-list').innerHTML = listHTML || "<p style='text-align:center;'>Belum ada data skor.</p>";
 }
 
-// Display rankings on home page
-function displayHomeRankings(){
-    const homeRankingList = document.getElementById('home-ranking-list');
-    
-    if(rankings.length === 0){
-        homeRankingList.innerHTML = '<div class="no-ranking">Belum ada data peringkat. Kerjakan ujian untuk masuk peringkat! 🚀</div>';
-        return;
-    }
-    
-    homeRankingList.innerHTML = '';
-    
-    const topRankings = rankings.slice(0, 6); // Show top 6
-    
-    topRankings.forEach((rank, index) => {
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
-        
-        const item = document.createElement('div');
-        item.className = 'ranking-item';
-        item.innerHTML = `
-            <div style="display:flex; align-items:center;">
-                <span class="ranking-medal">${medal}</span>
-                <span class="ranking-name">${rank.name}</span>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <span class="ranking-score">${rank.score}/${rank.total}</span>
-                <span class="ranking-grade grade-${rank.grade}">${rank.grade}</span>
-            </div>
-        `;
-        homeRankingList.appendChild(item);
-    });
-}
+function openCPTP() { document.getElementById('cptpModal').classList.add('active'); }
+function closeCPTP() { document.getElementById('cptpModal').classList.remove('active'); }
+function openQuiz() { document.getElementById('quizModal').classList.add('active'); resetQuiz(); }
+function closeQuiz() { document.getElementById('quizModal').classList.remove('active'); }
 
-function toggleMode(){
-    document.body.classList.toggle('malam');
-    const audio = document.getElementById('gamelan');
-    if(audio.paused){
-        audio.play();
-    }
-}
-
-function openQuiz(){
-    document.getElementById('quizModal').classList.add('active');
-}
-
-function closeQuiz(){
-    document.getElementById('quizModal').classList.remove('active');
-    resetQuiz();
-    displayHomeRankings(); // Update home rankings
-}
-
-function startQuiz(){
-    const nameInput = document.getElementById('student-name');
-    if(nameInput.value.trim() === ''){
-        alert('Mohon masukkan nama Anda!');
-        return;
-    }
-    studentName = nameInput.value.trim();
+function startQuiz() {
+    studentName = document.getElementById('student-name').value.trim();
+    if(!studentName) return alert("Harap masukkan nama Anda!");
     document.getElementById('name-input-container').classList.add('hidden');
     document.getElementById('quiz-container').classList.remove('hidden');
     loadQuestion();
 }
 
-function loadQuestion(){
-    const q = quizData[currentQuestion];
+function loadQuestion() {
+    const q = quizData[currentQ];
+    const imgTag = document.getElementById('quiz-img');
     document.getElementById('question').textContent = q.question;
-    document.getElementById('current-question').textContent = currentQuestion + 1;
-    document.getElementById('total-questions').textContent = quizData.length;
     
-    const optionsContainer = document.getElementById('options');
-    optionsContainer.innerHTML = '';
-    
-    q.options.forEach((option, index) => {
-        const div = document.createElement('div');
-        div.className = 'option';
-        div.textContent = option;
-        div.onclick = () => selectAnswer(index);
-        optionsContainer.appendChild(div);
-    });
-    
+    if(q.image) {
+        imgTag.src = q.image;
+        imgTag.style.display = 'block';
+    } else {
+        imgTag.style.display = 'none';
+    }
+
+    document.getElementById('options').innerHTML = q.options.map((opt, i) => `<div class="option" onclick="selectOption(${i})">${opt}</div>`).join('');
     document.getElementById('btn-submit').disabled = true;
     document.getElementById('btn-submit').classList.remove('hidden');
     document.getElementById('btn-next').classList.add('hidden');
-    
-    updateProgress();
+    document.getElementById('progress').style.width = ((currentQ + 1) / quizData.length * 100) + "%";
 }
 
-function selectAnswer(index){
-    const options = document.querySelectorAll('.option');
-    options.forEach(opt => opt.classList.remove('selected'));
-    options[index].classList.add('selected');
-    selectedAnswer = index;
+function selectOption(i) {
+    selected = i;
+    document.querySelectorAll('.option').forEach((el, idx) => el.className = idx === i ? 'option selected' : 'option');
     document.getElementById('btn-submit').disabled = false;
 }
 
-function checkAnswer(){
-    if(selectedAnswer === null) return;
-    
-    const options = document.querySelectorAll('.option');
-    options.forEach((opt, idx) => {
-        opt.classList.add('disabled');
-        if(idx === quizData[currentQuestion].correct){
-            opt.classList.add('correct');
-        }
-        if(idx === selectedAnswer && selectedAnswer !== quizData[currentQuestion].correct){
-            opt.classList.add('wrong');
-        }
+function checkAnswer() {
+    const correct = quizData[currentQ].correct;
+    document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.onclick = null;
+        if(i === correct) opt.classList.add('correct');
+        if(i === selected && i !== correct) opt.classList.add('wrong');
     });
-    
-    if(selectedAnswer === quizData[currentQuestion].correct){
-        score++;
-        document.getElementById('score').textContent = score;
-    }
-    
+    if(selected === correct) score++;
     document.getElementById('btn-submit').classList.add('hidden');
     document.getElementById('btn-next').classList.remove('hidden');
 }
 
-function nextQuestion(){
-    currentQuestion++;
-    selectedAnswer = null;
-    
-    if(currentQuestion < quizData.length){
-        loadQuestion();
-    } else {
-        showResult();
-    }
+function nextQuestion() {
+    currentQ++;
+    if(currentQ < quizData.length) { loadQuestion(); selected = null; } 
+    else { showResult(); }
 }
 
-function updateProgress(){
-    const progress = ((currentQuestion + 1) / quizData.length) * 100;
-    document.getElementById('progress').style.width = progress + '%';
-}
-
-function getGrade(percentage){
-    if(percentage >= 90) return {grade: 'A', class: 'grade-A', text: '🏆 Sempurna! Nilai A'};
-    if(percentage >= 80) return {grade: 'B', class: 'grade-B', text: '🎖️ Bagus Sekali! Nilai B'};
-    if(percentage >= 70) return {grade: 'C', class: 'grade-C', text: '👍 Cukup Baik! Nilai C'};
-    return {grade: 'D', class: 'grade-D', text: '💪 Perlu Belajar Lagi! Nilai D'};
-}
-
-function showResult(){
+function showResult() {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('result-container').classList.remove('hidden');
+    document.getElementById('final-score').textContent = `${score}/${quizData.length}`;
     
-    const percentage = (score / quizData.length) * 100;
-    const finalScore = percentage.toFixed(0);
-    const gradeInfo = getGrade(percentage);
-    
-    document.getElementById('final-score').textContent = score + '/' + quizData.length;
-    
-    const gradeBadge = document.getElementById('grade-badge');
-    gradeBadge.textContent = gradeInfo.grade;
-    gradeBadge.className = 'grade-badge ' + gradeInfo.class;
-    
-    document.getElementById('result-message').textContent = 
-        gradeInfo.text + ' • Nilai: ' + finalScore;
-    
-    // Save to rankings
-    const result = {
-        name: studentName,
-        score: score,
-        total: quizData.length,
-        percentage: percentage,
-        grade: gradeInfo.grade,
-        date: new Date().toLocaleString('id-ID')
-    };
-    
-    rankings.push(result);
-    rankings.sort((a, b) => b.percentage - a.percentage);
-    rankings = rankings.slice(0, 20); // Keep top 20
-    saveRankings();
-    
+    let msg = score >= 8 ? "Luar Biasa! 🌟" : score >= 6 ? "Bagus! Terus Belajar. 👍" : "Ayo coba lagi! 💪";
+    document.getElementById('result-message').textContent = msg;
+
+    rankings.push({ name: studentName, score });
+    rankings.sort((a,b) => b.score - a.score);
+    localStorage.setItem('candiRankings', JSON.stringify(rankings));
     displayRankings();
 }
 
-function displayRankings(){
-    const rankingList = document.getElementById('ranking-list');
-    rankingList.innerHTML = '';
-    
-    const topRankings = rankings.slice(0, 10);
-    
-    topRankings.forEach((rank, index) => {
-        const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
-        
-        const item = document.createElement('div');
-        item.className = 'ranking-item';
-        item.innerHTML = `
-            <div>
-                <span class="ranking-medal">${medal}</span>
-                <strong>${rank.name}</strong>
-            </div>
-            <div>
-                <strong>${rank.score}/${rank.total}</strong> 
-                <span style="color:#667eea;">(${rank.percentage.toFixed(0)}% - ${rank.grade})</span>
-            </div>
-        `;
-        rankingList.appendChild(item);
-    });
+function finishQuiz() {
+    closeQuiz();
+    resetQuiz();
+    document.querySelector('.ranking-card').scrollIntoView({ behavior: 'smooth' });
 }
 
-function resetQuiz(){
-    currentQuestion = 0;
-    score = 0;
-    selectedAnswer = null;
-    studentName = '';
-    document.getElementById('student-name').value = '';
-    document.getElementById('score').textContent = score;
+function restartQuiz() { resetQuiz(); startQuiz(); }
+
+function resetQuiz() {
+    currentQ = 0; score = 0; selected = null;
     document.getElementById('name-input-container').classList.remove('hidden');
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('result-container').classList.add('hidden');
 }
 
-function restartQuiz(){
-    resetQuiz();
-}
+function toggleMode() { document.body.classList.toggle('malam'); }
 
-// Initialize on page load
-window.addEventListener('load', function() {
-    loadRankings();
-    displayHomeRankings();
-});
+const audio = document.getElementById('gamelanAudio');
+const audioBtn = document.getElementById('audioToggle');
+audioBtn.onclick = () => {
+    if(audio.paused) { audio.play(); audioBtn.textContent = '🔇'; document.getElementById('audioStatus').textContent = 'Hidup'; }
+    else { audio.pause(); audioBtn.textContent = '🎵'; document.getElementById('audioStatus').textContent = 'Mati'; }
+};
+
+window.onload = loadRankings;
 </script>
-
 </body>
 </html>
